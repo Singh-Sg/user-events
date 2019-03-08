@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify">
+    <h3>All Events</h3>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Descriptions</th> 
+            <th>Date</th>
+            <th>Author</th> 
+            <th>Participants</th> 
+            <th>Join</th>
+        </tr>
+        {% for event in events %}
+            <tr>
+                <td>{{event.title}}</td>
+                <td>{{event.description}}</td> 
+                <td>{{event.date}}</td>
+                <td>{{event.user}}</td>
+                <td id=participants{{e.id}}>{{event.participants.count}}</td>
+                <td>
+                    {% if user in event.participants.all %}
+                        <button type="button"">Joined</button>
+                    {% else %}
+                        <button type="button" data-id={{event.id}} id=event{{event.id}} onclick="joinEvent(`{{event.id}}`);">Join</button>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% include 'includes/pagination.html' %}       
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+    function joinEvent(data_id,){
+        $.ajax({
+            type: "GET",
+            url: "/event/join/",
+            contentType: "application/json; charset=utf-8",
+            data : {'envetId': data_id},
+            dataType: "json",
+            success: function(message) {
+                if (message.status==200){
+                    $('#event'+data_id).replaceWith('<button type="button"">Joined</button>')
+                    $('#participants'+data_id).html( parseInt( $('#participants'+data_id).html() ) + 1 );
+                }
+                if (message.status==400){
+                    alert('Bad request')
+                }
+            },
+        })
+    }
+</script>
+{% endblock %}

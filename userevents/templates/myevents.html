@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify">
+    <table>
+        <tr>
+            <th>My Events</th>
+        </tr>
+        <tr>
+            <th>Title</th>
+            <th>Descriptions</th> 
+            <th>Date</th>
+            <th>Author</th> 
+            <th>Edit/Delete</th>
+        </tr>
+        {% for event in events %}
+            <tr>
+                <td>{{event.title}}</td>
+                <td>{{event.description}}</td> 
+                <td>{{event.date}}</td>
+                <td>{{event.user}}</td>
+                <td>
+                    <button type="button"><a href="{% url 'update_event' event.id %}">Edit </a></button>
+                    <button type="button"><a href="{% url 'delete_event' event.id %}">Delete </a></button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% include 'includes/pagination.html' %}
+
+{% endblock %}
